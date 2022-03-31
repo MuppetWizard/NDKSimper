@@ -81,8 +81,8 @@ void *customThread(void *pVoid){
     //调用一定需要 JNIEnv *env
     //env 无法跨越线程，只有JavaVM可以跨越线程
 
-    JNIEnv * env = NULL;
-    int result = jvm->AttachCurrentThread(&env, 0); //将native线程，附加到jvm上
+    JNIEnv *env;
+    int result = jvm->AttachCurrentThread(&env, NULL); //将native线程，附加到jvm上
     if (result != 0) {
         return 0;
     }
@@ -102,6 +102,7 @@ void *customThread(void *pVoid){
 extern "C" JNIEXPORT void JNICALL
 native_testThread(JNIEnv *env, jobject mainAct){
     instance = env->NewGlobalRef(mainAct);//获取全局变量，保证不被释放回收
+    env->GetJavaVM(&jvm);
     pthread_t pthreadID;
     pthread_create(&pthreadID,0,customThread,instance);
     pthread_join(pthreadID,0);
