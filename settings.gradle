@@ -9,3 +9,4 @@ dependencyResolutionManagement {
 rootProject.name = "NDKSimple"
 include ':app'
 include ':cmake_simple'
+include ':lib_ffmpeg'
