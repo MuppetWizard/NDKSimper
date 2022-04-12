@@ -15,6 +15,19 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+
+        externalNativeBuild {
+            cmake {
+                 cppFlags "" // 默认包含四大平台
+//                abiFilters  'arm64-v8a' //编译平台
+            }
+        }
+
+//        ndk {
+//            //过滤，只使用这个版本的库,否则默认的可是4个平台
+//            // 'armeabi-v7a' 'arm64-v8a'
+//            abiFilters  'arm64-v8a' //'armeabi-v7a'
+//        }
     }
 
     buildTypes {
@@ -32,6 +45,13 @@ android {
     }
     buildFeatures {
         viewBinding true
+    }
+
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.10.2'
+        }
     }
 }
 

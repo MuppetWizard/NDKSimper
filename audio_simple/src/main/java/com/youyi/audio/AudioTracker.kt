@@ -126,6 +126,7 @@ class AudioTracker(private val mContext: Context) {
                 mHandler.post {
                     Toast.makeText(mContext, "播放结束", Toast.LENGTH_SHORT).show()
                 }
+                mStatus = Status.STATUS_STOP
             }
 
         } catch (e: Exception) {
