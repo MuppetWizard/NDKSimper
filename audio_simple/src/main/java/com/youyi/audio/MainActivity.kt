@@ -31,6 +31,12 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("NewApi")
     private val PATH = "${Environment.getExternalStorageDirectory().absolutePath}/_test.pcm"
 
+    companion object{
+        init {
+            System.loadLibrary("audio-simple")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -39,6 +45,12 @@ class MainActivity : AppCompatActivity() {
         initAudioTrack()
         requestPermission()
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mAudioTracker.release()
+        nativeStopPCM()
     }
 
     private fun initAudioTrack() {
@@ -54,6 +66,12 @@ class MainActivity : AppCompatActivity() {
         binding.btnAtStop.setOnClickListener {
             mAudioTracker.stop()
         }
+        binding.btnOpenslStart.setOnClickListener {
+            nativePlayPCM(PATH)
+        }
+        binding.btnOpenslStop.setOnClickListener {
+            nativeStopPCM()
+        }
     }
 
     private fun requestPermission() {
@@ -65,5 +83,9 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE),100)
         }
     }
+
+    private external fun nativePlayPCM(path: String)
+
+    private external fun nativeStopPCM()
 
 }

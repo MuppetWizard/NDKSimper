@@ -19,5 +19,17 @@
         android:layout_height="wrap_content"
         android:text="AudioTrack Stop"
         />
+    <Button
+        android:id="@+id/btn_opensl_start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="OpenSL ES Play"
+        />
+    <Button
+        android:id="@+id/btn_opensl_stop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="OpenSL ES Stop"
+        />
 
 </LinearLayout>

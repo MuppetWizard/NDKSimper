@@ -19,7 +19,7 @@ find_library(log-lib log)
 target_link_libraries(
         audio-simple
         #音频渲染
-#        OpenSLES
+        OpenSLES
         #添加本地库
         android
 

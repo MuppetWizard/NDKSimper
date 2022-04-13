@@ -147,7 +147,7 @@ class AudioTracker(private val mContext: Context) {
         }
     }
 
-    private fun release() {
+    fun release() {
         Log.d(TAG,"-----release-----")
         mStatus = Status.STATUS_NOT_READY
         mAudioTrack?.release()

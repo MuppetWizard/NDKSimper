@@ -31,7 +31,7 @@ private:
 
         //1.2、初始化引擎
         result = (*engineObj) ->Realize(engineObj,SL_BOOLEAN_FALSE);
-        if (result != SL_BOOLEAN_FALSE) {
+        if (result != SL_RESULT_SUCCESS) {
             return;
         }
 
@@ -54,7 +54,7 @@ private:
 
         //2.2、初始化混音器
         result = (*outputMixObj) ->Realize(outputMixObj,SL_BOOLEAN_FALSE);
-        if (result != SL_BOOLEAN_FALSE) {
+        if (result != SL_RESULT_SUCCESS) {
             return;
         }
     }

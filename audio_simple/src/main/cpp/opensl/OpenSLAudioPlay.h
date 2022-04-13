@@ -7,13 +7,23 @@
 
 #include "AudioEngine.h"
 
+#define SAMPLE_FORMAT_16 16
+
 class OpenSLAudioPlay {
 
 public:
     OpenSLAudioPlay(int sampleRate, int sampleFormat, int channels);
-    ~OpenSLAudioPlay();
 
     bool init();
+
+    void enqueueSample(void *data, size_t length);
+
+    void release();
+
+    ~OpenSLAudioPlay();
+
+    friend void playerCallback(SLAndroidSimpleBufferQueueItf bq,void *context);
+
 private:
     AudioEngine *audioEngine;
     SLObjectItf mPlayerObj;

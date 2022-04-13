@@ -18,16 +18,18 @@ android {
 
         externalNativeBuild {
             cmake {
-                 cppFlags "" // 默认包含四大平台
+//                 cppFlags "" // 默认包含四大平台
 //                abiFilters  'arm64-v8a' //编译平台
+                abiFilters 'armeabi-v7a' // 指定当前项目，只编译armeabi-v7a的CPU平台架构
+
             }
         }
 
-//        ndk {
-//            //过滤，只使用这个版本的库,否则默认的可是4个平台
-//            // 'armeabi-v7a' 'arm64-v8a'
-//            abiFilters  'arm64-v8a' //'armeabi-v7a'
-//        }
+        ndk {
+            //过滤，只使用这个版本的库,否则默认的可是4个平台
+            // 'armeabi-v7a' 'arm64-v8a'
+            abiFilters  'armeabi-v7a' //'armeabi-v7a'
+        }
     }
 
     buildTypes {
