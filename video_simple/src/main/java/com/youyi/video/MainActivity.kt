@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.PackageManager
 import android.content.res.AssetManager
+import android.opengl.GLES10
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment

@@ -32,7 +32,7 @@ public:
 
     void release();
 
-    void progress();
+    void prepare();
 
     void start();
 
