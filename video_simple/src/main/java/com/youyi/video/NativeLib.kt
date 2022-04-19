@@ -1,6 +1,9 @@
 package com.youyi.video
 
+import android.graphics.YuvImage
+
 class NativeLib {
+
 
     /**
      * A native method that is implemented by the 'video' native library,

@@ -8,28 +8,21 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/btn_at_play"
+        android:id="@+id/btn_play"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="AudioTrack Play"
+        android:text="OpenGL ES Play"
         />
     <Button
-        android:id="@+id/btn_at_stop"
+        android:id="@+id/btn_native_play"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="AudioTrack Stop"
+        android:text="NativeWindow play"
         />
-    <Button
-        android:id="@+id/btn_opensl_start"
+    <com.youyi.video.YUVPlay
+        android:id="@+id/surface"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="OpenSL ES Play"
-        />
-    <Button
-        android:id="@+id/btn_opensl_stop"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="OpenSL ES Stop"
-        />
+        android:layout_height="match_parent"/>
+
 
 </LinearLayout>

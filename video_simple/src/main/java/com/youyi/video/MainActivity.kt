@@ -26,14 +26,14 @@ import java.io.File
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
+    private lateinit var mYUVPlay: YUVPlay
 
     @SuppressLint("NewApi")
     private val PATH = "${Environment.getExternalStorageDirectory().absolutePath}/_test.pcm"
 
     companion object{
         init {
-            System.loadLibrary("audio-simple")
+            System.loadLibrary("video")
         }
     }
 
@@ -42,27 +42,21 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initView()
-        initAudioTrack()
-        requestPermission()
-
+//        requestPermission()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        nativeStopPCM()
-    }
-
-    private fun initAudioTrack() {
-
+        mYUVPlay.onDestroy()
     }
 
     private fun initView() {
-
-        binding.btnOpenslStart.setOnClickListener {
-            nativePlayPCM(PATH)
+        mYUVPlay = binding.surface
+        binding.btnPlay.setOnClickListener {
+            mYUVPlay.glesPlay(PATH,mYUVPlay)
         }
-        binding.btnOpenslStop.setOnClickListener {
-            nativeStopPCM()
+        binding.btnNativePlay.setOnClickListener {
+            mYUVPlay.nativeWindowPlay(PATH, mYUVPlay.holder.surface)
         }
     }
 
@@ -76,8 +70,5 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private external fun nativePlayPCM(path: String)
-
-    private external fun nativeStopPCM()
 
 }
