@@ -23,7 +23,7 @@ set_target_properties(test_so PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/.
 add_library(
         native-lib
         SHARED
-        #        native-lib.cpp #替换  ${allCpp} 批量导入文件
+        #        native-ffmpeg.lib.cpp #替换  ${allCpp} 批量导入文件
         ${allCpp}
 )
 

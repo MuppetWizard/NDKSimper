@@ -22,7 +22,7 @@ project("ndksimple")
 #file(GLOB allCpp *.cpp)
 
 #生成可执行文件
-#add_executable(demo native-lib.cpp)
+#add_executable(demo native-ffmpeg.lib.cpp)
 
 ## 生成动态库或共享库
 add_library( # Sets the name of the library.

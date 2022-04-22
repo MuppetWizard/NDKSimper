@@ -1,11 +1,11 @@
 **Clang ndk23**  
 arm:
---isysroot = Android\ndk\android-ndk-r23b\toolchains\llvm\prebuilt\windows-x86_64\sysroot\usr\lib\arm-linux-androideabi\21
+--isysroot = Android\ndk\android-ndk-r23b\toolchains\llvm\prebuilt\windows-x86_64\sysroot\usr\ffmpeg.lib\arm-linux-androideabi\21
 -isystem = Android\ndk\android-ndk-r23b\toolchains\llvm\prebuilt\windows-x86_64\sysroot\usr\include
 -isystem = Android\ndk\android-ndk-r23b\toolchains\llvm\prebuilt\windows-x86_64\sysroot\usr\include\arm-linux-androideabi
 
 aarch64-linux-android:
--isysroot = Android\ndk\android-ndk-r23b\toolchains\llvm\prebuilt\windows-x86_64\sysroot\usr\lib\aarch64-linux-android
+-isysroot = Android\ndk\android-ndk-r23b\toolchains\llvm\prebuilt\windows-x86_64\sysroot\usr\ffmpeg.lib\aarch64-linux-android
 -isystem = Android\ndk\android-ndk-r23b\toolchains\llvm\prebuilt\windows-x86_64\sysroot\usr\include
 -isystem = Android\ndk\android-ndk-r23b\toolchains\llvm\prebuilt\windows-x86_64\sysroot\usr\include\aarch64-linux-android
 

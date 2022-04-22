@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
     companion object{
         init {
             System.loadLibrary("Test")
-            System.loadLibrary("native-lib")
+            System.loadLibrary("native-ffmpeg.lib")
         }
     }
 
