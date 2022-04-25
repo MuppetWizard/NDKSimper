@@ -2,7 +2,7 @@
 // Created by ASUS on 2022/4/22.
 //
 
-#include "JNICallback.h"
+#include "include/JNICallback.h"
 
 JNICallback::JNICallback(JavaVM *javaVm, JNIEnv *env, jobject instance) {
     this->javaVm = javaVm;

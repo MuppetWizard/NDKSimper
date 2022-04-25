@@ -11,9 +11,9 @@
 
 
 extern "C"{
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-#include <libavutil/time.h>
+#include "../../ffmpeg/include/libavformat/avformat.h"
+#include "../../ffmpeg/include/libavcodec/avcodec.h"
+#include "../../ffmpeg/include/libavutil/time.h"
 };
 
 class MPlayer {

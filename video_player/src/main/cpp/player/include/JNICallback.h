@@ -6,7 +6,7 @@
 #define NDKSIMPLE_JNICALLBACK_H
 
 #include <jni.h>
-#include "utils/Constans.h"
+#include "../utils/Constans.h"
 
 class JNICallback {
 public:

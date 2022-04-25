@@ -7,6 +7,7 @@ set(PLAYER ${CMAKE_SOURCE_DIR}/player)
 
 #指定 ffmpeg 头文件
 include_directories(${FFMPEG}/include)
+include_directories(${RTMP}/include)
 
 #指定 ffmpeg 静态库文件目录
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -L$(FFMPEG)/libs/${CMAKE_ANDROID_ARCH_ABI}")

@@ -2,7 +2,7 @@
 // Created by ASUS on 2022/4/22.
 //
 
-#include "MPlayer.h"
+#include "include/MPlayer.h"
 #include <unistd.h>
 
 MPlayer::MPlayer() {
@@ -137,10 +137,24 @@ void MPlayer::prepare_() {
         } else if (codecParameters->codec_type == AVMEDIA_TYPE_VIDEO){
 
         }
+    }//end for
 
 
+    //第十一步 如果流中没有音频和视频数据
+//        if (){
+//            return;
+//        }
+
+    //第十二步 要么有视频、要么有音频，要么音视频都有
+    LOGD("第十二步 要么有视频、要么有音频，要么音视频都有");
+    if (this->pCallback) {
+        pCallback->onPrepared(THREAD_CHILD);
     }
+}
 
+void MPlayer::start() {
+    //声明是否播放标记
+    isPlaying = false;
 
 
 }
