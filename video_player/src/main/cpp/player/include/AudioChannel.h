@@ -17,7 +17,13 @@ extern "C" {
 
 class AudioChannel : public BaseChannel {
 public:
+    int out_channel;
+    int out_sample_size;
+    int out_sample_rate;
+    int out_buffers_size;
+
     AudioChannel(int stream_index, AVCodecContext *pContext, AVRational , JNICallback *jniCallback);
+
     ~AudioChannel();
 
     void stop();
@@ -29,6 +35,11 @@ public:
     void audio_player();
 
     int getPCM();
+
+    //定义一个缓冲区
+    uint8_t *out_buffers = 0;
+
+
 
 private:
     //线程 id
@@ -45,10 +56,10 @@ private:
     SLObjectItf bqPlayerObjct;
     // 播放器接口
     SLPlayItf bqPlayerPlay;
+    // 获取播放器队列接口
+    SLAndroidSimpleBufferQueueItf bqPlayerBufferQueue;
 
-
-
-
+    SwrContext *swr_context;
 
 };
 
