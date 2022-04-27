@@ -30,9 +30,13 @@ public:
 
     void start();
 
+    void reStart();
+
     void audio_decode();
 
     void audio_player();
+
+    void release();
 
     int getPCM();
 
