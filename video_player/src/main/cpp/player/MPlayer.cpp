@@ -133,17 +133,24 @@ void MPlayer::prepare_() {
         //第十步 从编码器参数中获取流类型 const_type
         LOGD("第十步 从编码器参数中获取流类型 const_type");
         if (codecParameters->codec_type == AVMEDIA_TYPE_AUDIO) {
-
+            audioChannel = new AudioChannel(stream_index,codecContext,baseTime,pCallback);
         } else if (codecParameters->codec_type == AVMEDIA_TYPE_VIDEO){
-
+            //获取视频 fps
+            //平均帧率 = 时间基
+            AVRational frame_rate = stream->avg_frame_rate;
+            int fps_value = av_q2d(frame_rate);
+            videoChannel = new VideoChannel(stream_index, codecContext, baseTime, fps_value, pCallback);
+            videoChannel->setRenderCallback(renderCallback);
         }
     }//end for
 
 
     //第十一步 如果流中没有音频和视频数据
-//        if (){
-//            return;
-//        }
+    LOGD("第十一步 如果流中没有音视频数据");
+        if (!audioChannel && !videoChannel){
+            pCallback->onErrorAction(THREAD_CHILD,FFMPEG_NOMEDIA);
+            return;
+        }
 
     //第十二步 要么有视频、要么有音频，要么音视频都有
     LOGD("第十二步 要么有视频、要么有音频，要么音视频都有");
@@ -154,7 +161,150 @@ void MPlayer::prepare_() {
 
 void MPlayer::start() {
     //声明是否播放标记
+    isPlaying = 1;
+    if (videoChannel) {
+        videoChannel->setAudioChannel(audioChannel);
+        videoChannel->start();
+    }
+
+    if (audioChannel) {
+        audioChannel->start();
+    }
+
+    //定义一个播放线程
+    pthread_create(&pid_start, 0, customTaskStartThread, this);
+
+
+}
+
+void MPlayer::start_() {
+    //循环读音视频包
+    while (isPlaying) {
+        if (!formatContext) {
+            LOGD("FormatContext: %d", "formatConstext");
+            return;
+        }
+
+        if (isStop) {
+            //usleep(2 * 1000 * 1000);
+            continue;
+        }
+        LOGD("start_");
+
+        //内存泄漏点 fix: 控制队列大小
+        if (videoChannel && videoChannel->packages.queueSize() > 100) {
+            //休眠 等待队列中的数据被消费
+            av_usleep(10 * 1000);
+            continue;
+        }
+
+        //内存泄漏点 fix: 控制队列大小
+        if (audioChannel && audioChannel->packages.queueSize() > 100) {
+            //休眠 等待队列中的数据被消费
+            av_usleep(10 * 1000);
+            continue;
+        }
+
+        //AVPacket 可能是音频或者视频，没有解码的数据包
+        AVPacket *packet = av_packet_alloc();
+
+        //这一行执行完毕， packet 就有音视频数据了
+        int result = av_read_frame(formatContext,packet);
+        if (!result) {
+            if (videoChannel && videoChannel->stream_index == packet->stream_index) {//视频包
+                LOGE("stream_index 视频 %s", "push");
+                //未解码的 视频数据包 加入队列
+                videoChannel->packages.push(packet);
+            } else if (audioChannel && audioChannel->stream_index == packet->stream_index){//音频包
+                LOGE("stream_index 音频 %s", "push");
+                //将语音包加入到队列中，以供解码使用
+                audioChannel->packages.push(packet);
+            }
+        } else if (result == AVERROR_EOF) {
+            LOGE("stream_index 拆包完成 %s", "读取完成了");
+            isPlaying = 0;
+            stop();
+            release();
+            break;
+        } else {
+            LOGE("stream_index 拆包 %s", "读取失败");
+            break;
+        }
+    } //end while
+    //最后释放工作
+    isPlaying = 0;
+    isStop = false;
+    videoChannel->stop();
+    audioChannel->stop();
+
+}
+
+void MPlayer::stop() {
+    isStop = true;
+    if (videoChannel) videoChannel->stop();
+    if (audioChannel) audioChannel->stop();
+    if (videoChannel) videoChannel->javaCallHelper = 0;
+    if (audioChannel) audioChannel->javaCallHelper = 0;
+}
+
+/*
+ * 控制播放
+ */
+void MPlayer::seek(int i) {
+    //必须在 0 - duration 范围之间
+    if (i < 0 || i >= duration) return;
+    if (!audioChannel && !videoChannel) return;
+    if (!formatContext) return;
+
+    isSeek = 1;
+    // ----
+    pthread_mutex_lock(&seekMutex);
+    //单位 微秒
+    int64_t seek = i * 1000000;
+    //seek到请求的时间 之前最近的关键帧
+    //只有从关键帧开始才能解码出完整图片
+    av_seek_frame(formatContext,-1,seek,AVSEEK_FLAG_BACKWARD);
+//    avformat_seek_file(formatContext, -1, INT64_MIN, seek, INT64_MAX, 0);
+
+    //音频与视频队列中的数据 是不是可以丢掉了？
+    if (audioChannel) {
+        // 可以清空缓存
+        audioChannel->clear();
+        //自动队列
+    }
+
+    if (videoChannel) {
+        videoChannel->clear();
+    }
+    pthread_mutex_unlock(&seekMutex);
+    isSeek = 0;
+}
+
+void MPlayer::restart() {
+    isStop = false;
+    if (videoChannel) videoChannel->restart();
+    if (audioChannel) audioChannel->reStart();
+
+}
+
+void MPlayer::setRenderCallback(RenderCallback renderCallback) {
+    this->renderCallback = renderCallback;
+}
+
+void MPlayer::release() {
+    LOGD("YKPlayer ：%s", "执行了销毁");
     isPlaying = false;
+    stop();
+    if (videoChannel) videoChannel->release();
+    if (audioChannel) audioChannel->release();
+    if (codecContext) {
+        avcodec_free_context(&codecContext);
+        codecContext = 0;
+    }
+    if (formatContext) {
+        avformat_free_context(formatContext);
+        formatContext = 0;
+    }
 
-
+    duration = 0;
 }

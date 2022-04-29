@@ -8,6 +8,8 @@
 
 #include "JNICallback.h"
 #include <threads.h>
+#include "AudioChannel.h"
+#include "VideoChannel.h"
 
 
 extern "C"{
@@ -38,7 +40,7 @@ public:
 
     void release();
 
-    void setRenderCallback();
+    void setRenderCallback(RenderCallback renderCallback);
 
     bool isPlaying;
 
@@ -53,13 +55,19 @@ private:
 
     AVFormatContext *formatContext = 0;
 
+    AudioChannel *audioChannel = 0;
+
+    VideoChannel *videoChannel = 0;
+
     JNICallback *pCallback = 0;
 
     pthread_t pid_start;
 
     bool isStop = false;
 
-//    AVCodecContext
+    RenderCallback renderCallback;
+
+    AVCodecContext *codecContext = 0;
 
     pthread_mutex_t seekMutex;
 
