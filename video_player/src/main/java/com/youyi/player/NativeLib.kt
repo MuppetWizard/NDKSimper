@@ -36,7 +36,11 @@ class NativeLib {
     external fun releaseNative()
 
     /** 是否正在播放 */
-    external fun isPlayNative()
+    external fun isPlayNative() : Boolean
+
+    external fun getDuration() : Int
+
+    external fun seek(progress: Int)
 
     companion object {
         init {

@@ -63,6 +63,9 @@ void renderFrame(uint8_t *src_data, int width, int height, int src_size){
         memcpy(dst_data + i * lineSize,src_data + i * src_size,lineSize);
     }
 
+    ANativeWindow_unlockAndPost(nativeWindow);
+    pthread_mutex_unlock(&mutex);
+
 }
 
 extern "C" JNIEXPORT jstring JNICALL
@@ -80,35 +83,79 @@ Java_com_youyi_player_NativeLib_getFFmpegVersion(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_youyi_player_NativeLib_setSurfaceNative(JNIEnv *env, jobject thiz, jobject surface) {
+    LOGD("Java_com_youyi_player_NativeLib_setSurfaceNative");
+    pthread_mutex_lock(&mutex);
+    if (nativeWindow) {
+        ANativeWindow_release(nativeWindow);
+        nativeWindow = 0;
+    }
+    // 创建新的窗口用于视频显示
+    nativeWindow = ANativeWindow_fromSurface(env, surface);
+
+    pthread_mutex_unlock(&mutex);
 
 }
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_youyi_player_NativeLib_prepareNative(JNIEnv *env, jobject thiz, jstring m_data_source) {
+    // 首先解封装
+    JNICallback *jniCallback = new JNICallback(javaVm,env,thiz);
+    //转成 C 字符串
+    const char *data_source = env->GetStringUTFChars(m_data_source,NULL);
+    player = new MPlayer(data_source,jniCallback);
+    player->prepare();
+    env->ReleaseStringUTFChars(m_data_source,data_source);
 
 }
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_youyi_player_NativeLib_startNative(JNIEnv *env, jobject thiz) {
-
+    if (player) {
+        player->start();
+    }
 }
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_youyi_player_NativeLib_reStartNative(JNIEnv *env, jobject thiz) {
-
+    if (player) {
+        player->restart();
+    }
 }
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_youyi_player_NativeLib_stopNative(JNIEnv *env, jobject thiz) {
-
+    if (player) {
+        player->stop();
+    }
 }
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_youyi_player_NativeLib_releaseNative(JNIEnv *env, jobject thiz) {
-
+    if (player) {
+        player->release();
+    }
+}
+extern "C"
+JNIEXPORT jboolean  JNICALL
+Java_com_youyi_player_NativeLib_isPlayNative(JNIEnv *env, jobject thiz) {
+    jboolean isPlay = false;
+    if (player) {
+        isPlay = player->isPlaying;
+    }
+    return isPlay;
+}
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_youyi_player_NativeLib_getDuration(JNIEnv *env, jobject thiz) {
+    if (player) {
+        return player->getDuration();
+    }
+    return 0;
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_youyi_player_NativeLib_isPlayNative(JNIEnv *env, jobject thiz) {
-
+Java_com_youyi_player_NativeLib_seek(JNIEnv *env, jobject thiz, jint progress) {
+    if (player) {
+        player->seek(progress);
+    }
 }
