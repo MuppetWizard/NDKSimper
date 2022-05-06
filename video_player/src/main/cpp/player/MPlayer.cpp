@@ -19,6 +19,15 @@ MPlayer::MPlayer(const char *dataSource, JNICallback *pCallback) {
 MPlayer::~MPlayer() {
 }
 
+//异步 函数指针 void* (*__start_routine)(void*) 准备工作 prepare
+void *customTaskPrepareThread(void *pVoid) {
+    MPlayer *ykPlayer = static_cast<MPlayer *>(pVoid);
+    LOGD("customTashPrepareThread-->")
+    ykPlayer->prepare_();
+    return 0;//这里是坑一定要记得 return;
+
+}
+
 void *customTaskStartThread(void *pVoid){
     MPlayer *mPlayer = static_cast<MPlayer *>(pVoid);
     mPlayer->start();
@@ -28,7 +37,7 @@ void *customTaskStartThread(void *pVoid){
 void MPlayer::prepare() {
     //解析流媒体，通过ffmpeg API来解析 dataSource
     //这里需要异步，由于这个函数从 java 主线程调用，所以这里需要创建一个异步线程
-    pthread_create(&pid_prepare,0,customTaskStartThread, this);
+    pthread_create(&pid_prepare,0,customTaskPrepareThread, this);
 
 }
 
